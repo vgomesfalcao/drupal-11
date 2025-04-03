@@ -1,0 +1,16 @@
+FROM drupal:11-fpm-alpine
+
+COPY ./docroot/composer.json /opt/drupal/composer.json
+COPY ./docroot/composer.lock /opt/drupal/composer.lock
+COPY ./docroot/web/modules/custom /var/www/html/modules/custom
+COPY ./docroot/web/profiles /var/www/html/profiles
+COPY ./docroot/web/themes /var/www/html/themes
+COPY ./docroot/web/sites /var/www/html/sites
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/sites/default
+
+RUN rm -rf /var/cache/apk/* \
+    && rm -rf /tmp/*
